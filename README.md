@@ -1,6 +1,6 @@
 # Unity.Wcf
 
-Library for using unity with wcf.
+Library for using [Unity](http://unity.codeplex.com/) with WCF.
 
 ### Usage
 
@@ -10,7 +10,7 @@ Library for using unity with wcf.
 Sample Code using WebActivator and Unity.Wcf with asp.net mvc 3
 
 	[assembly: WebActivator.PreApplicationStartMethod(
-		typeof(WebApplication.App_Start.UnityWcfAppStart), "Start")]
+		typeof(WebApplication.App_Start.AppStart_Unity), "Start")]
 
 	namespace WebApplication.App_Start
 	{
@@ -18,7 +18,7 @@ Sample Code using WebActivator and Unity.Wcf with asp.net mvc 3
 		using Microsoft.Practices.Unity;
 		using Unity.Wcf;
 
-		public class UnityWcfAppStart
+		public class AppStart_Unity
 		{
 			public static void Start()
 			{
@@ -28,8 +28,9 @@ Sample Code using WebActivator and Unity.Wcf with asp.net mvc 3
 				// register services with the container.
 				RegisterServices(container, RouteTable.Routes);
 				
-				// Tell MVC 3 to use the Unity DI container.
-				DependencyResolver.SetResolver(
+	#if MVC
+				// Tell MVC 3 to use Unity DI container.
+				System.Web.Mvc.DependencyResolver.SetResolver(
 					serviceType =>
 					{
 						try { return container.Resolve(serviceType); }
@@ -40,6 +41,7 @@ Sample Code using WebActivator and Unity.Wcf with asp.net mvc 3
 						try { return container.ResolveAll(serviceType); }
 						catch { return null; }
 					});
+	#endif
 
 				// set the unity container as the service locator.
 				Microsoft.Practices.ServiceLocation.ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(container));
@@ -56,3 +58,9 @@ Sample Code using WebActivator and Unity.Wcf with asp.net mvc 3
 		}
 	}
 
+
+### License
+
+Unity.Wcf is intended to be used in both open-source and commercial environments.
+
+Unity.Wcf is licensed under Apache License 2.0.
